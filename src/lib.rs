@@ -18,12 +18,12 @@ pub struct Header {
 
 fn parse_vendor(v: u16) -> [char; 3] {
     let mask: u8 = 0x1F; // Each letter is 5 bits
-    let i0 = ('A' as u8) - 1; // 0x01 = A
-    return [
+    let i0 = b'A' - 1; // 0x01 = A
+    [
         (((v >> 10) as u8 & mask) + i0) as char,
         (((v >> 5) as u8 & mask) + i0) as char,
-        (((v >> 0) as u8 & mask) + i0) as char,
-    ];
+        ((v as u8 & mask) + i0) as char,
+    ]
 }
 
 named!(parse_header<&[u8], Header>, do_parse!(
@@ -143,7 +143,7 @@ named!(parse_detailed_timing<&[u8], DetailedTiming>, do_parse!(
         vertical_size: (vertical_size_lo as u16) | (((size_hi & 0xf) as u16) << 8),
         horizontal_border_pixels: horizontal_border,
         vertical_border_pixels: vertical_border,
-        features: features
+        features
     })
 ));
 
@@ -270,7 +270,7 @@ mod tests {
                 assert_eq!(&parsed, expected);
             }
             nom::IResult::Error(err) => {
-                panic!(format!("{}", err));
+                panic!("{}", err);
             }
             nom::IResult::Incomplete(_) => {
                 panic!("Incomplete");
