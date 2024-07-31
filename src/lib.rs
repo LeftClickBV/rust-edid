@@ -308,7 +308,6 @@ mod tests {
     fn test(d: &[u8], expected: &EDID) {
         match parse(d) {
             Ok((remaining, parsed)) => {
-                std::dbg!(&parsed);
                 assert_eq!(remaining.len(), 0);
                 assert_eq!(&parsed, expected);
             }
